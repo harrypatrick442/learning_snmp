@@ -6,16 +6,16 @@ import Chart from './Chart';
 class App extends Component{
 	constructor(props){
 		super(props);
-		this.chartA = React.createRef();
+		this.temperaturesChart = React.createRef();
 		let pollForNewData = this.pollForNewData.bind(this);
 		pollForNewData();
 		setInterval(pollForNewData, 5000);
 	}
 	pollForNewData(){
 		const ajax = new Ajax({url:'http://localhost/handler'});
-		ajax.post({data:JSON.stringify({type:'getData'})}).then((res)=>{
-			res = JSON.parse(res);
-			this.chartA.current.updateData(res.data);
+		ajax.post({data:JSON.stringify({type:'getTemperatures'})}).then((res)=>{
+			const temperatures = JSON.parse(res);
+			this.temperaturesChart.current.updateTemperatures(temperatures);
 		}).catch(console.error);
 	}
 	render(){
@@ -26,7 +26,7 @@ class App extends Component{
 			  Learning SNMP.
 			</p>
 		  </header>
-		  <Chart ref={this.chartA}></Chart>
+		  <Chart ref={this.temperaturesChart}></Chart>
 		</div>
 	  );
 	}

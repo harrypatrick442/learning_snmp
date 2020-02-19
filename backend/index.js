@@ -10,9 +10,7 @@ const bodyParser = new BodyParser(app, 2);
 const snmp = new SNMP({target:'192.168.0.33', community:'thisispublic'});
 const lmTemperatureSensors = new LmTemperatureSensors(snmp);
 lmTemperatureSensors.initialize().then(()=>{
-	lmTemperatureSensors.getAll().forEach((lmTemperatureSensor)=>{
-		console.log(`${lmTemperatureSensor.getTemperatureC()}°C`);
-	});
+	createHandlers();
 });
 			/*snmp.getBulk({
 				oids:["1.3.6.1.4.1.211"],
@@ -36,23 +34,26 @@ lmTemperatureSensors.initialize().then(()=>{
 				console.log('done');
 			}).catch(console.error);
 			*/
-app.get('/handler', (req, res) =>{
-	console.log('request get');
-});
-app.post('/handler', (req, res) =>{
-	const obj = JSON.parse(req.body);
-	switch(obj.type){
-		case 'test':
-			res.send(JSON.stringify({type:'testResponse'}));
-			break;
-		case 'getData':
-		
-			res.send(JSON.stringify({data: [Math.random() * 5, 2, 10]}));
-			break;
-	}
-});
-app.listen(port, () => console.log(`learning_snmp listening on port ${port}`));
-
+function createHandlers(){
+	app.get('/handler', (req, res) =>{
+		console.log('request get');
+	});
+	app.post('/handler', (req, res) =>{
+		const obj = JSON.parse(req.body);
+		switch(obj.type){
+			case 'getTemperatures':
+				const temperatures = lmTemperatureSensors.getAll().map((lmTemperatureSensor)=>{
+					temperatures.push({
+						name:lmTemperatureSensor.getName(),
+						value:lmTemperatureSensor.getTemperatureC()
+					});
+				});
+				res.send(JSON.stringify(temperatures));
+				break;
+		}
+	});
+	app.listen(port, () => console.log(`learning_snmp listening on port ${port}`));
+}
 function setupPromises(){
 	global.Promise=require('bluebird');
 	Promise.config({
