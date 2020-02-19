@@ -1,11 +1,19 @@
 {
   "name": "learning_snmp",
   "version": "1.0.0",
-  "description": "",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/harrypatrick442/learning_snmp.git"
+  },
+  "bugs": {
+    "url": "https://github.com/harrypatrick442/learning_snmp/issues"
+  },
+  "homepage": "https://github.com/harrypatrick442/learning_snmp#readme",
+  "description": ""
 }
