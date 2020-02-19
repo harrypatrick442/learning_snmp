@@ -42,8 +42,6 @@ module.exports = function(params){
 			if(!oids)throw new Error('No oids provided');
 			const session = getSession();
 			const callback = (err, varbindss)=>{
-				console.log(err);
-				console.log(varbindss);
 				if (err) {
 					reject(err);
 					return;
@@ -64,7 +62,6 @@ module.exports = function(params){
 					 }
 					 nestedStart=nonRepeaters;
 				}
-				console.log(varbindss);
 				for(var i=nestedStart; i<varbindss.length; i++){
 					const varbinds = varbindss[i];
 					const [error, variableBindings] = parseVariableBindings(varbinds);
@@ -92,7 +89,6 @@ module.exports = function(params){
 			{
 				if(maxRepititions!==undefined)
 				{
-					console.log('the one');
 					session.getBulk(oids, null, maxRepititions, callback);
 				}
 				else
@@ -116,7 +112,6 @@ module.exports = function(params){
 				session.walk (oid, feedCb, doneCb);
 			}
 			function doneCb (err) {
-				console.log('done cb');
 				if (err)
 				{
 					reject(err);
@@ -127,7 +122,6 @@ module.exports = function(params){
 			}
 
 			function feedCb (varbinds) {
-				console.log(varbinds);
 				const [err, variableBindings] = parseVariableBindings(varbinds);
 				if(err){
 					reject(err);
@@ -158,7 +152,6 @@ module.exports = function(params){
 					}
 					const nextVariableBinding = nextVariableBindings[0];
 					currentOid = nextVariableBinding.getOid();
-					console.log(nextOid);
 					if(currentOid.indexOf(oid)<0){
 						resolve(variableBindings);
 						return;
@@ -174,7 +167,6 @@ module.exports = function(params){
 			const oids = params.oids;
 			if(!oids)throw new Error('No oids provided');
 			const session = getSession();
-			console.log(oids);
 			session.getNext(oids, function (err, varbinds) {
 				if (err) {
 					reject(err);
@@ -191,7 +183,6 @@ module.exports = function(params){
 		});
 	};
 	function parseVariableBindings(varbinds, nonRepeaters){
-		console.log(varbinds);
 		const variableBindings = [], len=nonRepeaters?nonRepeaters:varbinds.length;
 		for (var i = 0; i < len; i++){
 			const variableBinding = varbinds[i];

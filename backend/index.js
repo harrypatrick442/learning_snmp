@@ -10,7 +10,9 @@ const bodyParser = new BodyParser(app, 2);
 const snmp = new SNMP({target:'192.168.0.33', community:'thisispublic'});
 const lmTemperatureSensors = new LmTemperatureSensors(snmp);
 lmTemperatureSensors.initialize().then(()=>{
-	
+	lmTemperatureSensors.getAll().forEach((lmTemperatureSensor)=>{
+		console.log(`${lmTemperatureSensor.getTemperatureC()}°C`);
+	});
 });
 			/*snmp.getBulk({
 				oids:["1.3.6.1.4.1.211"],
