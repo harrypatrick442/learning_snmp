@@ -1,5 +1,5 @@
 {
-  "name": "learning_snmp",
+  "name": "learning_snmp_backend",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -7,5 +7,10 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "bluebird": "^3.7.2",
+    "express": "^4.17.1",
+    "net-snmp": "^2.5.2"
+  }
 }
