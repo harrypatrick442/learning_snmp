@@ -37,8 +37,8 @@ class App extends Component{
 			  Learning SNMP
 			</p>
 		  </header>
-		  <TemperaturesChart ref={this.temperaturesChart}></TemperaturesChart>
 		  <TemperaturesTimeSeriesChart ref={this.temperaturesTimeSeriesChart}></TemperaturesTimeSeriesChart>
+		  <TemperaturesChart ref={this.temperaturesChart}></TemperaturesChart>
 		</div>
 	  );
 	}
