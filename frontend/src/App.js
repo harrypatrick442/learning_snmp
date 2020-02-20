@@ -2,20 +2,32 @@ import React, {Component} from 'react';
 import logo from './logo.svg';
 import './app.css';
 import Ajax from './Ajax';
-import Chart from './Chart';
+import TemperaturesChart from './TemperaturesChart';
+import TemperaturesTimeSeriesChart from './TemperaturesTimeSeriesChart';
 class App extends Component{
 	constructor(props){
 		super(props);
 		this.temperaturesChart = React.createRef();
-		let pollForNewData = this.pollForNewData.bind(this);
-		pollForNewData();
-		setInterval(pollForNewData, 5000);
+		this.temperaturesTimeSeriesChart = React.createRef();
+		let pollForNewTemperatures = this.pollForNewTemperatures.bind(this);
+		this.ajax = new Ajax({url:window.location.protocol + "//" + window.location.host+':1433/handler'});
+		pollForNewTemperatures();
+		setInterval(pollForNewTemperatures, 5000);
+		let pollForNewTemperaturesTimeSeries = this.pollForNewTemperaturesTimeSeries.bind(this);
+		pollForNewTemperaturesTimeSeries();
+		setInterval(pollForNewTemperaturesTimeSeries, 120000);
 	}
-	pollForNewData(){
-		const ajax = new Ajax({url:'http://localhost/handler'});
-		ajax.post({data:JSON.stringify({type:'getTemperatures'})}).then((res)=>{
+	pollForNewTemperatures(){
+		this.ajax.post({data:JSON.stringify({type:'getTemperatures'})}).then((res)=>{
 			const temperatures = JSON.parse(res);
 			this.temperaturesChart.current.updateTemperatures(temperatures);
+		}).catch(console.error);
+	}
+	pollForNewTemperaturesTimeSeries(){
+		this.ajax.post({data:JSON.stringify({type:'getTemperaturesTimeSeries'})}).then((res)=>{
+			const temperaturesTimeSeries = JSON.parse(res);
+			console.log(temperaturesTimeSeries);
+			this.temperaturesTimeSeriesChart.current.updateTemperaturesTimeSeries(temperaturesTimeSeries);
 		}).catch(console.error);
 	}
 	render(){
@@ -26,7 +38,8 @@ class App extends Component{
 			  Learning SNMP.
 			</p>
 		  </header>
-		  <Chart ref={this.temperaturesChart}></Chart>
+		  <TemperaturesChart ref={this.temperaturesChart}></TemperaturesChart>
+		  <TemperaturesTimeSeriesChart ref={this.temperaturesTimeSeriesChart}></TemperaturesTimeSeriesChart>
 		</div>
 	  );
 	}

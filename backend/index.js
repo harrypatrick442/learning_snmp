@@ -1,16 +1,18 @@
 const express = require('express');
 const BodyParser = require('./BodyParser'), CORS=require('./CORS')
 SNMP=require('./SNMP');
-const LmTemperatureSensors= require('./LmTemperatureSensors');
+const LmTemperatureSensors= require('./LmTemperatureSensors'),
+	Temperatures = require('./Temperatures');
 const app = express();
-const port = 80;
+const port =  1433;
 setupPromises();
 const cors = new CORS(app);
 const bodyParser = new BodyParser(app, 2);
 const snmp = new SNMP({target:'192.168.0.33', community:'thisispublic'});
 const lmTemperatureSensors = new LmTemperatureSensors(snmp);
 lmTemperatureSensors.initialize().then(()=>{
-	createHandlers();
+	const temperatures = new Temperatures({sensors:lmTemperatureSensors.getAll()});
+	createHandlers(temperatures);
 });
 			/*snmp.getBulk({
 				oids:["1.3.6.1.4.1.211"],
@@ -34,21 +36,21 @@ lmTemperatureSensors.initialize().then(()=>{
 				console.log('done');
 			}).catch(console.error);
 			*/
-function createHandlers(){
+function createHandlers(temperatures){
 	app.get('/handler', (req, res) =>{
 		console.log('request get');
 	});
 	app.post('/handler', (req, res) =>{
 		const obj = JSON.parse(req.body);
+		console.log(obj);
 		switch(obj.type){
 			case 'getTemperatures':
-				const temperatures = lmTemperatureSensors.getAll().map((lmTemperatureSensor)=>{
-					temperatures.push({
-						name:lmTemperatureSensor.getName(),
-						value:lmTemperatureSensor.getTemperatureC()
-					});
-				});
-				res.send(JSON.stringify(temperatures));
+				res.send(JSON.stringify(temperatures.getTemperaturesArray()));
+				break;
+			case 'getTemperaturesTimeSeries':
+				temperatures.getTemperaturesTimeSeries().then((temperaturesTimeSeries)=>{
+					res.send(JSON.stringify(temperaturesTimeSeries));
+				}).catch(console.error);
 				break;
 		}
 	});
