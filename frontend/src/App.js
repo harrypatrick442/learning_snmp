@@ -26,7 +26,6 @@ class App extends Component{
 	pollForNewTemperaturesTimeSeries(){
 		this.ajax.post({data:JSON.stringify({type:'getTemperaturesTimeSeries'})}).then((res)=>{
 			const temperaturesTimeSeries = JSON.parse(res);
-			console.log(temperaturesTimeSeries);
 			this.temperaturesTimeSeriesChart.current.updateTemperaturesTimeSeries(temperaturesTimeSeries);
 		}).catch(console.error);
 	}
@@ -35,7 +34,7 @@ class App extends Component{
 		<div className="App">
 		  <header className="header">
 			<p>
-			  Learning SNMP.
+			  Learning SNMP
 			</p>
 		  </header>
 		  <TemperaturesChart ref={this.temperaturesChart}></TemperaturesChart>
